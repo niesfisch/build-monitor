@@ -210,6 +210,7 @@ def test_menu_lists_builds_below_static_actions(monkeypatch) -> None:
     action_texts = [action.text() for action in tray._menu.actions()]
     assert action_texts == [
         "Refresh now",
+        "Reload config",
         "Quit",
         "",
         _label_for_status(snapshot.statuses[1]),

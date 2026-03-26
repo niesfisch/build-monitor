@@ -67,6 +67,7 @@ class TrayApplication:
         if not QSystemTrayIcon.isSystemTrayAvailable():
             raise RuntimeError("No system tray detected in this desktop session")
 
+        self._config_path = config_path
         self._config = load_config(config_path)
         self._monitor_factory = monitor_factory or BuildMonitor
         self._tray = QSystemTrayIcon()
@@ -82,10 +83,14 @@ class TrayApplication:
         self._refresh_action = QAction("Refresh now")
         self._refresh_action.triggered.connect(self.refresh)
 
+        self._reload_config_action = QAction("Reload config")
+        self._reload_config_action.triggered.connect(self.reload_config)
+
         self._quit_action = QAction("Quit")
         self._quit_action.triggered.connect(self.quit)
 
         self._menu.addAction(self._refresh_action)
+        self._menu.addAction(self._reload_config_action)
         self._menu.addAction(self._quit_action)
 
         self._tray.setContextMenu(self._menu)
@@ -129,6 +134,17 @@ class TrayApplication:
         self._refresh_result_timer.start()
 
         threading.Thread(target=self._refresh_worker, daemon=True).start()
+
+    def reload_config(self) -> None:
+        try:
+            self._config = load_config(self._config_path)
+            self._timer.setInterval(self._config.poll_interval_seconds * 1000)
+            self.refresh()
+        except Exception as exc:
+            self._last_aggregate_state = AggregateState.YELLOW
+            self._tray.setIcon(_icon_for_state(self._last_aggregate_state))
+            self._tray.setToolTip(f"Config error: {exc}")
+
 
     def _on_activated(self, reason: QSystemTrayIcon.ActivationReason) -> None:
         if reason == QSystemTrayIcon.ActivationReason.Trigger:

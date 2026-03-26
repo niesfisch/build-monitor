@@ -97,16 +97,11 @@ Example:
 {
   "poll_interval_seconds": 60,
   "github_token_env": "GITHUB_TOKEN",
-  "show_builds": "all",
   "builds": [
     {
-      "name": "Backend CI",
-      "url": "https://github.com/your-org/your-repo/actions/workflows/ci.yml",
+      "name": "Build Monitor",
+      "url": "https://github.com/niesfisch/build-monitor/actions/workflows/ci.yml",
       "branch": "main"
-    },
-    {
-      "name": "Release Build",
-      "url": "https://github.com/your-org/your-repo/actions/workflows/release.yml"
     }
   ]
 }
