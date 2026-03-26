@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gha-tray-monitor"
+version = "0.1.0"
+description = "Linux tray utility that monitors GitHub Actions workflows"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+  { name = "Build Monitor Contributors" }
+]
+dependencies = [
+  "PySide6>=6.8.0",
+  "httpx>=0.28.0"
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8.3.0",
+  "respx>=0.22.0"
+]
+
+[project.scripts]
+gha-tray-monitor = "gha_tray_monitor.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gha_tray_monitor"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "-q"
+
