@@ -267,6 +267,10 @@ MIT. See `LICENSE`.
 # For me
 
 ```bash
+#GIT_SSH_COMMAND='ssh -i ~/.ssh/niesfisch' git remote add origin git@github.com:niesfisch/build-monitor.git
+#GIT_SSH_COMMAND='ssh -i ~/.ssh/niesfisch' git branch -M main
+#GIT_SSH_COMMAND='ssh -i ~/.ssh/niesfisch' git push -u origin main
 GIT_SSH_COMMAND='ssh -i ~/.ssh/niesfisch' git pull  
+GIT_SSH_COMMAND='ssh -i ~/.ssh/niesfisch' git add -A; git commit -m"ci stuff"; git push origin main  
 GIT_SSH_COMMAND='ssh -i ~/.ssh/niesfisch' git push origin main  
 ```

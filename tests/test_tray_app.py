@@ -1,12 +1,21 @@
 from __future__ import annotations
 
 import os
+import sys
 import threading
 import time
 
+import pytest
+
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtWidgets import QApplication
+# Skip all tests in this module if PySide6 graphics libs are unavailable (CI/headless env)
+pyside6_available = True
+try:
+    from PySide6.QtWidgets import QApplication
+except ImportError as e:
+    pyside6_available = False
+    pytest.skip(f"PySide6 not available (headless environment?): {e}", allow_module_level=True)
 
 from gha_tray_monitor.models import AggregateState, AppConfig, BuildConfig, BuildState, BuildStatus
 from gha_tray_monitor.monitor import MonitorSnapshot
