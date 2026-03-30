@@ -20,8 +20,8 @@ def _example_config() -> AppConfig:
         github_token_env="GITHUB_TOKEN",
         builds=[
             BuildConfig(
-                name="Example Build",
-                url="https://github.com/octocat/Hello-World/actions/workflows/ci.yml",
+                name="Build Monitor",
+                url="https://github.com/niesfisch/build-monitor/actions/workflows/ci.yml",
                 branch="main",
             )
         ],
