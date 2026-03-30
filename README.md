@@ -281,6 +281,12 @@ pytest
 - Qt xcb plugin error: install the distro package listed in [Requirements](#requirements)
 - Tray icon missing in GNOME: verify the AppIndicator extension is enabled and re-login
 - Private repo returns 404: verify token scope, env var name, and workflow URL format
+- `--check-once` returns empty output or the tray shows only `❔` question marks: the
+  GitHub token is likely not visible in the current environment. Verify that the env var
+  is exported (`echo $GITHUB_TOKEN`) and that `github_token_env` in your config matches
+  the exact variable name. For the systemd service, make sure the token is set in
+  `~/.config/gha-tray-monitor/env` — a token exported only in your shell session is
+  not inherited by the service.
 
 ## License
 
