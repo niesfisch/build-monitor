@@ -95,6 +95,7 @@ class TrayApplication:
 
         self._tray.setContextMenu(self._menu)
         self._tray.activated.connect(self._on_activated)
+        self._tray.setIcon(_icon_for_state(self._last_aggregate_state))
         self._tray.setToolTip(_tooltip_for_state(self._last_aggregate_state))
 
         self._blink_timer = QTimer()
