@@ -57,7 +57,7 @@ Other distros (for Qt xcb runtime issues):
 ## Clone
 
 ```bash
-git clone https://github.com/<your-org>/gha-tray-monitor.git
+git clone https://github.com/niesfisch/build-monitor.git
 cd gha-tray-monitor
 ```
 
@@ -81,7 +81,7 @@ python -m pip install --upgrade pip
 pip install -e '.[test]'
 # cli mode
 gha-tray-monitor --check-once --show all
-# start tray icon
+# start tray icon and keep shell connection
 gha-tray-monitor
 # start tray icon and return to the shell
 gha-tray-monitor --background
