@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sys
 
 import gha_tray_monitor.__main__ as main_module
 from gha_tray_monitor.models import (
@@ -108,4 +109,78 @@ def test_check_once_failed_running_orders_failed_first(monkeypatch, capsys) -> N
         "- Beta: failed (failure)",
         "- Delta: running (in_progress)",
     ]
+
+
+def test_main_background_starts_detached_child(monkeypatch, tmp_path, capsys) -> None:
+    config_path = tmp_path / "config.json"
+    log_path = tmp_path / "tray.log"
+    launched: dict[str, object] = {}
+
+    class FakeProcess:
+        pid = 4242
+
+        def poll(self) -> None:
+            return None
+
+    def fake_popen(command, **kwargs):
+        launched["command"] = command
+        launched["kwargs"] = kwargs
+        return FakeProcess()
+
+    monkeypatch.setattr(main_module, "check_linux_qt_runtime", lambda: None)
+    monkeypatch.setattr(main_module, "_background_log_path", lambda: log_path)
+    monkeypatch.setattr(main_module.subprocess, "Popen", fake_popen)
+    monkeypatch.setattr(main_module.time, "sleep", lambda _seconds: None)
+
+    exit_code = main_module.main(["--background", "--config", str(config_path)])
+    output = capsys.readouterr()
+
+    assert exit_code == 0
+    assert str(log_path) in output.out
+    assert "Started tray app in background" in output.out
+    assert launched["command"] == [
+        sys.executable,
+        "-m",
+        "gha_tray_monitor",
+        "--config",
+        str(config_path),
+    ]
+    assert launched["kwargs"] == {
+        "stdin": main_module.subprocess.DEVNULL,
+        "stdout": launched["kwargs"]["stdout"],
+        "stderr": launched["kwargs"]["stdout"],
+        "start_new_session": True,
+        "close_fds": True,
+    }
+
+
+def test_main_background_reports_immediate_child_exit(monkeypatch, tmp_path, capsys) -> None:
+    log_path = tmp_path / "tray.log"
+
+    class FakeProcess:
+        pid = 4242
+
+        def poll(self) -> int:
+            return 7
+
+    monkeypatch.setattr(main_module, "check_linux_qt_runtime", lambda: None)
+    monkeypatch.setattr(main_module, "_background_log_path", lambda: log_path)
+    monkeypatch.setattr(main_module.subprocess, "Popen", lambda *args, **kwargs: FakeProcess())
+    monkeypatch.setattr(main_module.time, "sleep", lambda _seconds: None)
+
+    exit_code = main_module.main(["--background"])
+    output = capsys.readouterr()
+
+    assert exit_code == 7
+    assert f"Check {log_path}." in output.err
+    assert "exited immediately with code 7" in output.err
+
+
+def test_main_background_cannot_be_combined_with_check_once(capsys) -> None:
+    exit_code = main_module.main(["--background", "--check-once"])
+    output = capsys.readouterr()
+
+    assert exit_code == 2
+    assert output.err.strip() == "--background cannot be combined with --check-once"
+
 

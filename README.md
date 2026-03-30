@@ -83,6 +83,8 @@ pip install -e '.[test]'
 gha-tray-monitor --check-once --show all
 # start tray icon
 gha-tray-monitor
+# start tray icon and return to the shell
+gha-tray-monitor --background
 ```
 
 ## Configuration
@@ -170,6 +172,19 @@ Exit codes:
 - `0` = green
 - `1` = yellow
 - `2` = red
+
+Background tray start:
+
+```bash
+gha-tray-monitor --background
+gha-tray-monitor --background --config /path/to/config.json
+```
+
+This starts the tray app in a detached session, returns your shell prompt immediately, and writes startup/runtime logs to:
+
+`~/.local/state/gha-tray-monitor/tray.log`
+
+Do not use `--background` inside the systemd service. The service should keep running in the foreground and let systemd supervise it.
 
 ## Build, Reinstall, Restart (Local Dev)
 
