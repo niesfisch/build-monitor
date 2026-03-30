@@ -1,12 +1,12 @@
 # GitHub Actions Tray Monitor
 
-Linux tray utility that monitors GitHub Actions workflows and shows CI health at a glance.
+Linux tray utility that monitors GitHub Actions workflows and shows CI/CD health at a glance.
 
 - Green icon: all configured builds are passing
 - Red icon: at least one build failed
 - Yellow icon: running, unknown, or API issues
 - Blinking yellow icon: refresh in progress
-- Click tray icon: opens dropdown with `Refresh now`, `Quit`, and all configured builds
+- Click tray icon: opens dropdown with `Refresh now`, `Reload Config`, `Quit`, and all configured builds
 
 ![Tray icon screenshot](doc/tray_icon.png)
 
